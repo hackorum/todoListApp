@@ -61,7 +61,6 @@ export default class CompletedScreen extends Component {
             text: "Completed Todos",
             style: { color: "#fff", fontSize: 23, fontWeight: "bold" },
           }}
-          rightComponent={{ icon: "filter-list-alt", color: "#fff" }}
           backgroundColor="royalblue"
         />
         <SearchBar

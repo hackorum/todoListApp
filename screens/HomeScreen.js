@@ -12,7 +12,6 @@ import {
   Alert,
 } from "react-native";
 import { MaterialIcons } from "@expo/vector-icons";
-import AddTodoForm from "../components/AddTodoForm";
 import db from "../config";
 import firebase from "firebase";
 
@@ -118,9 +117,43 @@ export default class HomeScreen extends Component {
     db.collection("todos").doc(key).delete();
   };
   renderItem = ({ item }) => {
+    setInterval(() => {
+    let date = new Date();
+    let hour = date.getHours();
+    let minute = date.getMinutes();
+    let weekday = new Array(7);
+    weekday[0] = "Sun";
+    weekday[1] = "Mon";
+    weekday[2] = "Tue";
+    weekday[3] = "Wed";
+    weekday[4] = "Thu";
+    weekday[5] = "Fri";
+    weekday[6] = "Sat";
+    let dayInWeek = weekday[date.getDay()];
+    let dayInMonth = date.getDate();
+    let months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+    let month = date.getMonth();
+    let monthName = months[month];
+    let year = date.getFullYear();
+    let currentDate = dayInWeek + ' ' + monthName + ' ' + dayInMonth + ' ' + year + ' '
+    let currentTime = hour + '' + minute
+    let dueTime = item.dueTime.replace(':', '')
+    if(item.dueDate == currentDate && !item.timePassed && currentTime >= dueTime) {
+      db.collection('todos').where('title', '==', item.title).get().then((snapshot) => {
+        snapshot.forEach(doc => {
+          db.collection('todos').doc(doc.id).update({
+            timePassed: true
+          })
+        })
+      })
+    }
+    }, 60000)
     return (
       <View style={styles.todoContainer}>
         <Text>{item.title}</Text>
+        {item.timePassed ? (
+          <Text style={{color: "#f00"}}>overdue</Text>
+        ): null}
         <View style={styles.buttons}>
           <TouchableOpacity
             onPress={() => this.moveItemToCompleted(item.title, item.key)}
@@ -152,7 +185,6 @@ export default class HomeScreen extends Component {
           onRequestClose={() => this.setState({ modalVisible: false })}
         >
           <View style={styles.modalContainer}>
-            <AddTodoForm close={() => this.setState({ modalVisible: false })} />
           </View>
         </Modal>
         <View style={styles.header}>
@@ -193,7 +225,7 @@ export default class HomeScreen extends Component {
             <Text style={styles.titleText}>TODOs</Text>
           </View>
           <TouchableOpacity
-            onPress={() => this.setState({ modalVisible: true })}
+            onPress={() => this.props.navigation.navigate('AddTodoScreen')}
             style={styles.addButton}
           >
             <MaterialIcons name="add" size={50} />
@@ -284,7 +316,7 @@ const styles = StyleSheet.create({
     backgroundColor: "rgba(0,0,0,0.4)",
   },
   todoContainer: {
-    backgroundColor: "white",
+    backgroundColor: '#fff',
     paddingVertical: "7%",
     width: "80%",
     marginTop: "10%",

@@ -36,7 +36,6 @@ export default class LoginScreen extends Component {
       })
       .catch(function (error) {
         Alert.alert("Error: " + error.message);
-        console.log(error);
       });
   };
   render() {

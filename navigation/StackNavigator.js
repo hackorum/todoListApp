@@ -7,6 +7,7 @@ import HomeScreen from "../screens/HomeScreen";
 import CompletedScreen from "../screens/CompletedScreen";
 import SignupScreen from "../screens/SignupScreen";
 import ForgotPasswordScreen from "../screens/ForgotPasswordScreen";
+import AddTodoScreen from "../screens/AddTodoScreen";
 import * as firebase from "firebase";
 
 const defaultRoute = firebase.auth().currentUser ? "HomeScreen" : "LoginScreen";
@@ -27,6 +28,9 @@ export const StackNavigator = createStackNavigator(
       navigationOptions: {
         gestureEnabled: true,
       },
+    },
+    AddTodoScreen: {
+      screen: AddTodoScreen
     },
     HomeScreen: {
       screen: HomeScreen,
